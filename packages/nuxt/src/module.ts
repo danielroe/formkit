@@ -10,6 +10,7 @@ import {
   addComponent,
   addImports,
   addPlugin,
+  addVitePlugin,
 } from '@nuxt/kit'
 import type { NuxtModule } from '@nuxt/schema'
 import unpluginFormKit from 'unplugin-formkit/vite'
@@ -137,17 +138,10 @@ const useAutoImport = async function installLazy(options, nuxt) {
     src: resolve('./runtime/formkitSSRPlugin.mjs'),
   })
 
-  nuxt.hook('vite:extendConfig', (config) => {
-    const plugin = unpluginFormKit({
-      defaultConfig: options.defaultConfig,
-      configFile: configBase,
-    })
-    if (Array.isArray(config.plugins)) {
-      config.plugins?.unshift(plugin)
-    } else {
-      config.plugins = [plugin]
-    }
-  })
+  addVitePlugin(unpluginFormKit({
+    defaultConfig: options.defaultConfig,
+    configFile: configBase,
+  }))
 } satisfies NuxtModule<ModuleOptions>
 /**
  * Installs FormKit via Nuxt plugin. This registers the FormKit plugin globally
